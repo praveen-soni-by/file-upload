@@ -1,14 +1,27 @@
-import http from "../http/http-client";
+import { gql } from "@apollo/client";
 
-const uploadFile = async (file: File): Promise<any> => {
-  let formData = new FormData();
-  formData.append("file", file);
+const downloadFileLocalPath = (fileName: String) => {
+  fetch(`/template/${fileName}.csv`)
+    .then(response => {
+      response.blob().then(blob => {
+        let url = window.URL.createObjectURL(blob);
+        let a = document.createElement('a');
+        a.href = url;
+        a.download = `${fileName}.csv`;
+        a.click();
+      });
+    });
+}
 
-  return http.post("/upload", formData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  });
-};
 
-export default { uploadFile };
+const uploadFileGQL = gql`
+  mutation uploadFile($input: Upload!) {
+    uploadFile(file: $input)
+  }
+`;
+
+const FileService = { downloadFileLocalPath, uploadFileGQL }
+
+
+
+export default FileService;

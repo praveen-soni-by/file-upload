@@ -1,92 +1,110 @@
+import { useMutation } from "@apollo/client";
 import React, { useState } from "react";
 import FileService from "../services/FileService";
 import Alert from "./Alert";
-import Error from "./Error";
-import Icon from './svg/Icon';
+import Loader from "./Loader";
+import Icon from "./svg/Icon";
 
-const errors = [
-  {
-    id: "id",
-    message: "message",
-  },
-];
+interface FileUploadProps {
+  acceptType?: Array<String>
+}
 
-export default function FileUpload() {
+const FILE_UPLOAD_SUCESS = "File uploaded Successfully";
+const FILE_UPLOAD_FAILURE = "File upload failed";
+
+export default function FileUpload({ acceptType }: FileUploadProps) {
+
   const [file, setFile] = useState<File>();
-  const [result, setResult] = useState<String>();
+  const [message, setMessage] = useState<String>("");
+  const [isFileSupported, setFileSupported] = useState<boolean>(false);
+  const [isError, setError] = useState<boolean>(true);
+  const [uploadFileMutation, { loading }] = useMutation(FileService.uploadFileGQL);
+
+  const uploadFile = (e: any): void => {
+    e.preventDefault();
+    resetFormFields();
+    
+    uploadFileMutation({
+      variables: { input: file },
+    }).then((res: any) => {
+        let isUploaded = res?.data?.uploadFile;
+        setError(!isUploaded)
+        setFile(null)
+        setMessage(isUploaded ? FILE_UPLOAD_SUCESS : FILE_UPLOAD_FAILURE)
+      }).catch((err: any) => {
+        setError(true)
+        setMessage(FILE_UPLOAD_FAILURE)
+      })
+  };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setResult(null);
-    setFile(event.target.files[0]);
+    let fileName = event.target.files[0];
+    setFile(fileName);
+    validateFileType(fileName.name);
+    resetFormFields();
   };
 
-  const uploadFile = (
-    event: React.MouseEvent<HTMLInputElement, MouseEvent>
-  ): void => {
-    FileService.uploadFile(file).then((res: any) => {
-      if (res.status === 200) {
-        setResult(res.data);
-      } else {
-        setResult("File upload failed");
-      }
-      setFile(null);
-    });
-  };
+  const resetFormFields = () => {
+    setError(false)
+    setMessage(null)
+  }
+
+  const validateFileType = (fileName: String) => {
+    let fileExtension = fileName.split(".");
+    if (!acceptType.includes("." + fileExtension[1])) {
+      setFileSupported(true)
+    } else {
+      setFileSupported(false)
+    }
+  }
+
 
   return (
     <>
-      <div className="max-w-md mx-auto md:w-full  bg-white rounded-lg overflow-hidden md:max-w-lg">
-        <div className="md:flex ">
-          <div className="w-full">
-            <div className="p-4 justify-center align-middle  text-center">
-            <span className="text-lg font-bold text-gray-600">
-              Upload Template
-            </span>
-          </div>
-            <div className="p-3 ">
-              <form>
-                <div className="mb-2">
-                  <div className="relative h-16 rounded-lg border-2 border-gray-200 bg-white flex justify-center items-center hover:cursor-pointer">
-                    <div className="absolute">
-                      <div className="flex flex-col items-center ">
-                        <label className=" absolute justify-center flex h-full w-full">
-                          {file?.name ? file.name : "Choose a file to upload"}
+      <Alert message={message} isError={isError} />
+      <div className="justify-center mt-4 w-full mb-2 rounded-lg ">
+        <form onSubmit={uploadFile}>
 
-                         <Icon.FileUploadIcon/>
-
-                        </label>
-                        <input
-                          type="file"
-                          accept=".xls,.xlsx"
-                          className=" opacity-0  cursor-pointer"
-                          onChange={handleChange}
-                        />
-                        
-                      </div>
-                    </div>
+          <div className="text-gray-700 flex-col flex items-center font-bold mb-3">File Upload</div>
+          <div className="rounded-lg py-2 bg-gray-50">
+            <div className="m-4">
+              <div className="flex  w-full ">
+                <label
+                  className="flex flex-col w-full h-32 border-4 cursor-pointer border-blue-200 border-dashed hover:bg-gray-100 hover:border-gray-300">
+                  <div className="flex flex-col items-center pt-7 ">
+                    <Icon.FileUpload />
+                    <p className="pt-1 text-sm truncate font-medium  text-gray-400 group-hover:text-gray-600">
+                      {file?.name ? file.name : "Attach a file"}
+                    </p>
+                    {loading && <Loader />}
                   </div>
-                </div>
-                <div className="mt-4 text-center ">
-                <i className="fa fa-folder-open fa-4x text-blue-700"></i>
-                <input
-                  type="button"
-                  onClick={uploadFile}
-                  value="Upload"
-                  disabled={file?.name == null}
-                  className={`w-1/4x h-10 text-base px-5 bg-blue-500 rounded text-white hover:bg-blue-700 disabled:opacity-50 cursor-pointer `}
-                />
+                  <input type="file"
+                  disabled={loading}
+                    accept={acceptType.toString()}
+                    className="opacity-0  " onChange={handleChange} />
+                </label>
               </div>
-              </form>
-            
-              {/* <div className="flex justify-end p-2 text-sm font-normal items-center text-gray-400 ">
-                  <span>Accepted file type:.xls .xlsx only</span>
-                </div> */}
             </div>
           </div>
-        </div>
-        {result && <Alert message={result} />}
+          <span className="flex items-center flex-col mb-1 font-medium tracking-wide text-red-400 text-sm mt-1">{isFileSupported ? `Only ${acceptType} are supported` : ""}</span>
+          <div className="flex p-2">
+            <button
+              type="submit"
+              disabled={isDisabled()}
+              className="w-full px-4 py-2 text-white bg-blue-500 rounded disabled:opacity-50 cursor-pointer ">
+              Upload
+            </button>
+          </div>
+
+        </form>
       </div>
-      {errors.length > 0 && <Error errors={errors} />}
+
     </>
   );
+
+  function isDisabled(): boolean {
+    console.log("isDisabled")
+
+    return file?.name == null || isFileSupported || loading;
+  }
 }
