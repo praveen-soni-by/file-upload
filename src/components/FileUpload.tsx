@@ -79,7 +79,7 @@ export default function FileUpload({ acceptType }: FileUploadProps) {
                     {loading && <Loader />}
                   </div>
                   <input type="file"
-                  disabled={loading}
+                    disabled={loading}
                     accept={acceptType.toString()}
                     className="opacity-0  " onChange={handleChange} />
                 </label>
@@ -103,8 +103,6 @@ export default function FileUpload({ acceptType }: FileUploadProps) {
   );
 
   function isDisabled(): boolean {
-    console.log("isDisabled")
-
     return file?.name == null || isFileSupported || loading;
   }
 }

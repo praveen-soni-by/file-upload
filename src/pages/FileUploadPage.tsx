@@ -1,8 +1,9 @@
-import Error from "../components/Error";
+
 import FileUpload from "../components/FileUpload";
 import Template from "../components/Template";
-import FileService from "../services/FileService";
+import Navbar from "../components/Navbar";
 
+import FileService from "../services/FileService";
 const errors: Array<any> = [{"id":"col1","message":"Invalid field type"},{"id":"col1","message":"Invalid field type"},{"id":"col1","message":"Invalid field type"},{"id":"col1","message":"Invalid field type"},{"id":"col1","message":"Invalid field type"},{"id":"col1","message":"Invalid field type"},{"id":"col1","message":"Invalid field type"}];
 const ACCEPTED_TYPE: Array<String> = [".csv"];
 
@@ -14,7 +15,8 @@ export default function FileUploadPage() {
 
   return (
     <>
-      <div className="flex py-6 justify-center h-screen ">
+    <Navbar/>
+      <div className="flex py-6 justify-center 3lg:h-screen ">
         <div className="bg-gray-100 h-3/6
             text-white font-bold  sm:w-3/4 md:w-3/4 rounded-lg   lg:w-1/2 ">
           <div className="grid grid-cols-2 gap-2  md:grid-cols-5 ">
@@ -33,3 +35,4 @@ export default function FileUploadPage() {
     </>
   );
 }
+
