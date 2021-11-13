@@ -1,18 +1,10 @@
-import { createUploadLink } from 'apollo-upload-client'
 import {
   ApolloClient,
-  InMemoryCache,
-  ApolloProvider,
-  createHttpLink,
-  gql,
-  NormalizedCacheObject,
-  split,
-  useQuery,
-  useSubscription
+  InMemoryCache, split
 } from "@apollo/client";
-
-
 import { WebSocketLink } from "@apollo/client/link/ws";
+import { createUploadLink } from 'apollo-upload-client';
+
 
 const webSocketLink = new WebSocketLink({
   uri: 'ws://localhost:8080/subscriptions'

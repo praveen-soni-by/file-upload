@@ -1,5 +1,5 @@
 import { useMutation } from "@apollo/client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import FileService from "../services/FileService";
 import Alert from "./Alert";
 import Loader from "./Loader";
@@ -20,27 +20,35 @@ export default function FileUpload({ acceptType }: FileUploadProps) {
   const [isError, setError] = useState<boolean>(true);
   const [uploadFileMutation, { loading }] = useMutation(FileService.uploadFileGQL);
 
+
+  useEffect(() => {
+    setTimeout(() => {
+      setMessage(null)
+    }, 5000)
+  }, [loading])
+
   const uploadFile = (e: any): void => {
     e.preventDefault();
     resetFormFields();
-    
+
     uploadFileMutation({
       variables: { input: file },
     }).then((res: any) => {
-        let isUploaded = res?.data?.uploadFile;
-        setError(!isUploaded)
-        setFile(null)
-        setMessage(isUploaded ? FILE_UPLOAD_SUCESS : FILE_UPLOAD_FAILURE)
-      }).catch((err: any) => {
-        setError(true)
-        setMessage(FILE_UPLOAD_FAILURE)
-      })
+      let isUploaded = res?.data?.uploadFile;
+      setError(!isUploaded)
+      setFile(null)
+      setMessage(isUploaded ? FILE_UPLOAD_SUCESS : FILE_UPLOAD_FAILURE)
+
+    }).catch((err: any) => {
+      setError(true)
+      setMessage(FILE_UPLOAD_FAILURE)
+    })
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     let fileName = event.target.files[0];
     setFile(fileName);
-    validateFileType(fileName.name);
+    validateFileType(fileName?.name);
     resetFormFields();
   };
 
@@ -58,10 +66,16 @@ export default function FileUpload({ acceptType }: FileUploadProps) {
     }
   }
 
-
   return (
     <>
-      <Alert message={message} isError={isError} />
+      <div 
+      id="toast"
+      className="max-w-12  flex 
+       border-0
+      text-white bottom-12 right-4 
+                    absolute" role="alert">
+        <Alert message={message} isError={isError} />
+      </div>
       <div className="justify-center mt-4 w-full mb-2 rounded-lg ">
         <form onSubmit={uploadFile}>
 
@@ -73,7 +87,7 @@ export default function FileUpload({ acceptType }: FileUploadProps) {
                   className="flex flex-col w-full h-32 border-4 cursor-pointer border-blue-200 border-dashed hover:bg-gray-100 hover:border-gray-300">
                   <div className="flex flex-col items-center pt-7 ">
                     <Icon.FileUpload />
-                    <p className="pt-1 text-sm truncate font-medium  text-gray-400 group-hover:text-gray-600">
+                    <p className="pt-1 text-sm truncate font-medium  text-gray-400">
                       {file?.name ? file.name : "Attach a file"}
                     </p>
                     {loading && <Loader />}
@@ -86,12 +100,12 @@ export default function FileUpload({ acceptType }: FileUploadProps) {
               </div>
             </div>
           </div>
-          <span className="flex items-center flex-col mb-1 font-medium tracking-wide text-red-400 text-sm mt-1">{isFileSupported ? `Only ${acceptType} are supported` : ""}</span>
+          <span className="flex items-center flex-col mb-1 error-text mt-1">{isFileSupported ? `Only ${acceptType} are supported` : ""}</span>
           <div className="flex p-2">
             <button
               type="submit"
               disabled={isDisabled()}
-              className="w-full px-4 py-2 text-white bg-blue-500 rounded disabled:opacity-50 cursor-pointer ">
+              className="w-full btn">
               Upload
             </button>
           </div>

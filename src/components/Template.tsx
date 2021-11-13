@@ -9,7 +9,6 @@ export default function Template({ downloadFile }: TemplateProps) {
     if (fileName === "") return;
     downloadFile(fileName);
   }
-
   return (
     <div
       className="w-full bg-white border-gray-200 rounded-lg text-md py-4 px-4 text-gray-500 ">
