@@ -1,9 +1,10 @@
 
 interface TemplateProps {
+  options :Array<string>
   downloadFile?: (val: String) => void;
 }
 
-export default function Template({ downloadFile }: TemplateProps) {
+export default function Template({ downloadFile ,options }: TemplateProps) {
 
   const downloadTemplate = (fileName: String) => {
     if (fileName === "") return;
@@ -18,9 +19,8 @@ export default function Template({ downloadFile }: TemplateProps) {
         onChange={(e) => downloadTemplate(e.target.value)}
       >
         <option value="">Select </option>
-        <option value="Carrer">Carrer</option>
-        <option value="Customer">Customer</option>
-        <option value="location">Location</option>
+       {options.map(op => <option value={op}>{op}</option>)}
+        
       </select>
     </div>
   );

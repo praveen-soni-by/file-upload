@@ -1,7 +1,8 @@
 import { gql } from "@apollo/client";
 
+
 const downloadFileLocalPath = (fileName: String) => {
-  fetch(`/template/${fileName}.csv`)
+  fetch(`http://localhost:8080/download/test.csv`)
     .then(response => {
       response.blob().then(blob => {
         let url = window.URL.createObjectURL(blob);
