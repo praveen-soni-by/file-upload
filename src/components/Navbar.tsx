@@ -1,96 +1,40 @@
-import {
-    gql, useSubscription
-} from '@apollo/client';
-import { useEffect, useState, useRef } from "react";
-import { NotificationProps } from '../interface/NotificationProps';
-import Notification from './Notification';
-
-export default function Navbar() {
-    const [notifications, setNotifications] = useState<NotificationProps[]>([]);
-    const [showNotification, setShowNotification] = useState(false);
-    const [unseenNotificationCount, setUnseenNotificationCount] = useState(0);
-    // const [showAlert, setAlert] = useState(false);
-    const ref = useRef(null);
-
-    const handleClickOutside = (event: any) => {
-        if (ref.current && !ref.current.contains(event.target)) {
-            setShowNotification(false);
-        }
-    };
-
-    useEffect(() => {
-        document.addEventListener('click', handleClickOutside, true);
-        return () => {
-            document.removeEventListener('click', handleClickOutside, true);
-        };
-    });
+import Icon from "./svg/Icon";
 
 
-    const { data } = useSubscription(gql`
-    subscription statusWatch {
-        status {
-            message
-            id
-            fileName
-            timeStamp
-        }
-    }
-`, {});
+interface NavProps {
+  templates: Object
+  downloadTemplate: (fileName: string) => void
+}
 
+export default function Navbar({ templates, downloadTemplate }: NavProps) {
+  return (
+    <nav className="flex items-center text-white  justify-center p-6">
+      <div className="flex items-center flex-shrink-0 text-white mr-6">
+        <Icon.Logo />
+      </div>
+      <div className="w-full block flex-grow lg:flex lg:items-center lg:w-auto ml-4">
 
-
-    useEffect(() => {
-        if (data) {
-            // setAlert(true);
-
-            setNotifications([{
-                "id": data?.status?.id,
-                "timestamp": data?.status?.timeStamp,
-                "fileName": data?.status?.fileName,
-                "msg": data?.status?.message
-            }, ...notifications.slice(0, 4),])
-            setUnseenNotificationCount(unseenNotificationCount + 1)
-        }
-
-    }, [data])
-
-    const showNotificationWindow = () => {
-        setShowNotification(!showNotification)
-        setUnseenNotificationCount(0)
-    }
-
-    return (
-        <>
-            <nav className="bg-white shadow ">
-                <div className="flex justify-end items-center h-14">
-                    <div className="flex items-end">
-                        <div className=" md:block">
-                            <button className="flex  items-end mr-5" onClick={showNotificationWindow}>
-                                <div className="inline-flex absolute items-center px-1 py-0.5  border-white rounded-full text-xs font-semibold leading-3 bg-blue-500 text-white">
-                                    {unseenNotificationCount}
-                                </div>
-                                <svg className="h-7 w-7 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                                </svg>
-                            </button>
-
-
-                        </div>
-                    </div>
-                </div>
-            </nav>
-            {showNotification &&
-                <div ref={ref} className="  shadow-lg flex w-72 absolute top-14 right-2 ">
-                    <Notification data={notifications} />
-                </div>
-            }
-            {/* {showAlert &&
-                <div className="bg-blue-500 border w-60  flex  text-white bottom-14 right-2 
-                 border-blue-100  px-4 py-3 rounded absolute" role="alert">
-                    <span className="block sm:inline"> {data?.status?.message}</span>
-                </div>
-            } */}
-        </>
-    )
+        <div className="dropdown-container inline-block">
+          <button
+            className="outline-none focus:outline-none  px-3 py-1  rounded-sm flex items-center min-w-32"
+          >
+            <div className="cursor-pointer text-xl font-medium">Templates</div>
+            <span className="ml-2">
+              <Icon.DownArrow />
+            </span>
+          </button>
+          <ul
+            className="item-container min-w-32 z-40"
+          >
+            {Object.entries(templates)?.map(([key, value]) => (
+              <li key={key} className="text-black">
+                <a onClick={() => downloadTemplate(key)}
+                  className="dropdown-item " href="#">{value}</a></li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </nav>
+  )
 }
 

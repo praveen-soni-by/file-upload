@@ -2,48 +2,92 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  background-color: rgba(247, 248, 249, 1)
-}
-
-
-#notification-scroll::-webkit-scrollbar {
-  width: 4px;
-  height: 10px;
+/* Css for modifying Scollbar -Start */
+.custome-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+  background-color: #fff;
   cursor: pointer;
-  /*background-color: rgba(229, 231, 235, var(--bg-opacity));*/
-
 }
-#notification-scroll::-webkit-scrollbar-track {
+
+.custome-scrollbar::-webkit-scrollbar-track {
   background-color: rgba(229, 231, 235, var(--bg-opacity));
   cursor: pointer;
+  background-color: #fff;
 }
-#notification-scroll::-webkit-scrollbar-thumb {
+.custome-scrollbar::-webkit-scrollbar-thumb {
   cursor: pointer;
+  background-color: #fff;
   background-color: #a0aec0;
 }
 
-.error-text{
-  @apply font-medium tracking-wide text-red-400 text-sm 
-}
-.btn{
-  @apply  px-4 py-2 text-white bg-blue-500 rounded disabled:opacity-50 cursor-pointer 
-}
-.no-data-found{
-  @apply text-sm font-medium border border-gray-100 bg-white px-2 py-2 h-full align-middle text-center text-gray-900
+/* Css for modifying Scollbar -End */
+
+/* Css for Navabar -Start */
+.item-container {
+  @apply bg-white border rounded-sm transform scale-0 rotate-hover:scale-100 absolute 
+  transition duration-200 ease-in-out origin-top;
 }
 
-.alert-text{
-  @apply  text-sm font-medium cursor-pointer  border border-gray-100 bg-white px-2 py-2 hover:bg-gray-100 text-gray-900
+li > ul {
+  transform: translatex(100%) scale(0);
 }
-.alert-text-small{
-  @apply text-gray-300 truncate -mb-1 text-xs
+li:hover > ul {
+  transform: translatex(101%) scale(1);
+}
+li > button svg {
+  transform: rotate(-90deg);
+}
+li:hover > button svg {
+  transform: rotate(-270deg);
+}
+
+.dropdown-container:hover .rotate-hover\:scale-100 {
+  transform: scale(1);
+}
+.dropdown-container:hover .rotate-hover\:-rotate-180 {
+  transform: rotate(180deg);
+}
+.scale-0 {
+  transform: scale(0);
+}
+.min-w-32 {
+  min-width: 8rem;
+}
+
+/* Css for Navabar -End */
+
+/* Css for Alert (Success,Failure) -Start */
+
+.alert-text {
+  @apply text-sm font-medium cursor-pointer  border border-gray-100 bg-white px-2 py-2 hover:bg-gray-100 text-gray-900;
+}
+.alert-text-small {
+  @apply text-gray-300 truncate -mb-1 text-xs;
 }
 
 .alert-text-thin {
-  @apply  text-gray-300 text-right -mb-2 text-xs font-normal
+  @apply text-gray-300 text-right -mb-2 text-xs font-normal;
 }
 
+.alert-container {
+  @apply flex   border-0 text-white top-12 right-4  absolute;
+}
+/* Css for Alert (Success,Failure) -End */
+
+.error-text {
+  @apply font-medium tracking-wide text-red-400 text-sm;
+}
+.btn {
+  @apply px-4 py-2 text-white bg-blue-500 rounded disabled:opacity-50 cursor-pointer;
+}
+.no-data-found {
+  @apply text-sm font-medium border border-gray-100 bg-white px-2 py-2 h-full align-middle text-center text-gray-900;
+}
+
+.link {
+  @apply hover:text-blue-500  hover:underline;
+}
 
 #toast {
   visibility: visible;
@@ -52,28 +96,50 @@ body {
 }
 
 @-webkit-keyframes fadein {
-  from {right: -40px; opacity: 0;} 
-  to {right: 1rem; opacity: 1;}
+  from {
+    right: -40px;
+    opacity: 0;
+  }
+  to {
+    right: 1rem;
+    opacity: 1;
+  }
 }
 
 @keyframes fadein {
-  from {right: -40px; opacity: 0;}
-  to {right: 1rem; opacity: 1;}
+  from {
+    right: -40px;
+    opacity: 0;
+  }
+  to {
+    right: 1rem;
+    opacity: 1;
+  }
 }
 
-
-
-
-.outline input:focus-within ~ label,
-.outline input:not(:placeholder-shown) ~ label {
-  @apply transform scale-75 -translate-y-4 z-0 ml-3 px-1 py-0;
+.dropdown:hover .dropdown-menu {
+  display: block;
 }
 
-input:focus-within ~ label,
-input:not(:placeholder-shown) ~ label {
-  @apply transform scale-75 -translate-y-6;
+.dropdown-item {
+  @apply rounded-t text-base   border-gray-50  hover:bg-gray-50 py-2 px-4 block;
+}
+.container-bg {
+  height: 500px;
+  background: linear-gradient(to bottom, #0099ff 80%, white 30%);
 }
 
-input:focus-within ~ label {
-  @apply text-blue-500;
+.table-header {
+  @apply px-6 py-3 text-left text-sm font-semibold text-gray-500 uppercase tracking-wider;
+}
+
+.table-td {
+  @apply px-6 py-2 text-left whitespace-nowrap text-sm text-gray-500;
+}
+
+.badge {
+  @apply px-2 text-center inline-flex text-xs leading-5  rounded-full;
+}
+.floating-label {
+  @apply absolute text-gray-400  px-4 left-4 pointer-events-none transform origin-left transition-all duration-100 ease-in-out;
 }
