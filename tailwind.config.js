@@ -3,6 +3,15 @@ module.exports = {
   darkMode: false, // or 'media' or 'class'
   theme: {
     extend: {
+      animation: {
+        fade: 'fadeOut 1s ease-in-out',
+      },
+      keyframes: theme => ({
+        fadeOut: {
+          '0%': { opacity: 0},
+          '100%': {opacity:1 },
+        },
+      }),
       colors: {
         'primary': '#0099ff',
         'secondary': '#243c5a',
@@ -23,7 +32,7 @@ module.exports = {
       opacity: ['disabled'],
       cursor: ['disabled'],
       textColor: ['visited'],
-      backgroundColor: ['disabled']
+      backgroundColor: ['disabled','even']
     },
   },
   plugins: [],

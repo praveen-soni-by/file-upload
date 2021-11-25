@@ -6,7 +6,7 @@ export default function Alert({ message, isError }: any) {
   return (
     <div
       className={` ${isError ? "bg-red-200 border-red-500 " : "bg-green-200 border-green-500 "
-        } border-l-4  rounded-sm p-2 flex h-12 max-w-xs`}
+        } border-l-4  rounded-sm p-2 flex h-12 max-w-xs animate-fade `}
     >
       {isError ? <Icon.CircleCross /> : <Icon.CircleCheck />}
 

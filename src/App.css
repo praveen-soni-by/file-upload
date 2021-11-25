@@ -86,7 +86,7 @@ li:hover > button svg {
 }
 
 .link {
-  @apply hover:text-blue-500  hover:underline;
+  @apply hover:text-blue-500  underline;
 }
 
 #toast {
@@ -126,19 +126,19 @@ li:hover > button svg {
 }
 .container-bg {
   height: 500px;
-  background: linear-gradient(to bottom, #0099ff 80%, white 30%);
+  background: linear-gradient(to bottom, #0099ff 60%, white 30%);
 }
 
 .table-header {
-  @apply px-6 py-3 text-left text-sm font-semibold text-gray-500 uppercase tracking-wider;
+  @apply px-6 py-3 text-left text-sm font-semibold  uppercase tracking-wider;
 }
 
 .table-td {
-  @apply px-6 py-2 text-left whitespace-nowrap text-sm text-gray-500;
+  @apply px-6 py-2 text-left whitespace-nowrap text-sm text-gray-600;
 }
 
 .badge {
-  @apply px-2 text-center inline-flex text-xs leading-5  rounded-full;
+  @apply px-2 text-left inline-flex text-xs leading-5 rounded-full;
 }
 .floating-label {
   @apply absolute text-gray-400  px-4 left-4 pointer-events-none transform origin-left transition-all duration-100 ease-in-out;

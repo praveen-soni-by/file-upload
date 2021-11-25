@@ -11,18 +11,18 @@ export default function FileUploadPage() {
 
   const [templates, setTemplates] = useState<any>([]);
 
-  const downloadTemplate = (fileId: string) => {
-    FileService.downloadFile("template" , fileId);
+  const downloadTemplate = (templateId: string) => {
+    FileService.downloadTemplate(templateId);
   }
 
   useLayoutEffect(() => {
     FileService.getTemplates()
       .then(res => res?.json())
       .then(res => setTemplates(res))
-
   }, [])
 
   return (
+    
     <div className='container-bg'>
       <Navbar templates={templates} downloadTemplate={downloadTemplate} />
       <Upload acceptType={ACCEPTED_TYPE} />

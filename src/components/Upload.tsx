@@ -4,6 +4,7 @@ import Alert from "./Alert";
 import Loader from "./Loader";
 import Icon from "./svg/Icon";
 import FileService from "../services/FileService";
+import { ResultContext } from "../context/ContextProvider";
 
 interface FileUploadProps {
     acceptType?: Array<String>
@@ -12,12 +13,14 @@ interface FileUploadProps {
 const FILE_UPLOAD_SUCESS = "File uploaded Successfully";
 const FILE_UPLOAD_FAILURE = "File upload failed";
 
+
 export default function Upload({ acceptType }: FileUploadProps) {
     const [file, setFile] = useState<File>();
     const [message, setMessage] = useState<String>();
     const [isFileNotSupported, setFileNotSupported] = useState<boolean>(false);
     const [isError, setError] = useState<boolean>(true);
     const [uploadFileMutation, { loading }] = useMutation(FileService.uploadFileGQL);
+    const { updateResult} = React.useContext(ResultContext) 
 
     useEffect(() => {
         setTimeout(() => {
@@ -37,6 +40,10 @@ export default function Upload({ acceptType }: FileUploadProps) {
             variables: { input: file },
         }).then((res: any) => {
             let isUploaded = res?.data?.uploadFile;
+            updateResult([{
+                ...res.data.uploadFile,
+                'uploadedDate':formatDate(res.data.uploadFile.uploadedDate)
+            }])
             setError(!isUploaded)
             setFile(null)
             setMessage(isUploaded ? FILE_UPLOAD_SUCESS : FILE_UPLOAD_FAILURE)
@@ -61,7 +68,7 @@ export default function Upload({ acceptType }: FileUploadProps) {
 
     const validateFileType = (fileName: String) => {
         let fileExtension = fileName?.split(".");
-        if (fileExtension.length > 0 && !acceptType.includes("." + fileExtension[1])) {
+        if (fileExtension?.length > 0 && !acceptType.includes("." + fileExtension[1])) {
             setFileNotSupported(true)
         } else {
             setFileNotSupported(false)
@@ -72,8 +79,9 @@ export default function Upload({ acceptType }: FileUploadProps) {
         setFile(null)
         setFileNotSupported(false)
     }
+    
     return (
-        <div className="container z-50 flex justify-center items-center mt-6 ">
+        <div className="container z-50 flex  justify-center items-center mt-6 ">
             <form onSubmit={uploadFile} >
                 <div className="relative">
                     <input type="file"
@@ -83,7 +91,7 @@ export default function Upload({ acceptType }: FileUploadProps) {
                         className="h-14 absolute opacity-0" />
                     <input type="input"
                         defaultValue={file?.name}
-                        className="h-14 w-96 pl-8 text-gray-600 shadow-sm  pr-20 truncate rounded-full z-0 focus:shadow focus:outline-none" />
+                        className="h-14 w-96 pl-8 shadow-md  text-gray-600  pr-20 truncate rounded-full z-0 focus:shadow focus:outline-none border border-2 border-blue-100" />
                     <label htmlFor="file" className={`floating-label  ${file?.name ? " -top-0 text-xs" : " top-4 text-base "}`}>Browse File...</label>
 
                     <div className="absolute top-1 right-2 flex justify-center items-center">
@@ -110,6 +118,10 @@ export default function Upload({ acceptType }: FileUploadProps) {
             </div>
         </div>
     )
+
+    function formatDate(res: any) {
+        return new Date(new Date(res).getTime() - new Date(res).getTimezoneOffset() * 60000).toISOString().replace("T", " ").substr(0, 19);
+    }
 
     function isDisabled(): boolean {
         return isFileNotSupported || file?.name == null || loading;

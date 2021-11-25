@@ -23,13 +23,11 @@ export default function Navbar({ templates, downloadTemplate }: NavProps) {
               <Icon.DownArrow />
             </span>
           </button>
-          <ul
-            className="item-container min-w-32 z-40"
-          >
+          <ul className="item-container min-w-32 z-40">
             {Object.entries(templates)?.map(([key, value]) => (
               <li key={key} className="text-black">
                 <a onClick={() => downloadTemplate(key)}
-                  className="dropdown-item " href="#">{value}</a></li>
+                  className="dropdown-item " href="#/">{value}</a></li>
             ))}
           </ul>
         </div>
