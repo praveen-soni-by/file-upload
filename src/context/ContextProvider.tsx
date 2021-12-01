@@ -1,9 +1,10 @@
-import * as React from 'react'
+import React from 'react'
+import { IResult } from '../interface/IResult';
 
 export type ContextState = {
-    records: [];
-    resetResult: (data: any) => void;
-    updateResult: (data: any) => void;
+    records: IResult[];
+    resetResult: (data: IResult[]) => void;
+    updateResult: (data: IResult[]) => void;
 };
 
 const contextDefaultValues: ContextState = {

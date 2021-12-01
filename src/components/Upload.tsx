@@ -20,7 +20,7 @@ export default function Upload({ acceptType }: FileUploadProps) {
     const [isFileNotSupported, setFileNotSupported] = useState<boolean>(false);
     const [isError, setError] = useState<boolean>(true);
     const [uploadFileMutation, { loading }] = useMutation(FileService.uploadFileGQL);
-    const { updateResult} = React.useContext(ResultContext) 
+    const { updateResult } = React.useContext(ResultContext)
 
     useEffect(() => {
         setTimeout(() => {
@@ -40,14 +40,14 @@ export default function Upload({ acceptType }: FileUploadProps) {
             variables: { input: file },
         }).then((res: any) => {
             let isUploaded = res?.data?.uploadFile;
-            updateResult([{
-                ...res.data.uploadFile,
-                'uploadedDate':formatDate(res.data.uploadFile.uploadedDate)
-            }])
             setError(!isUploaded)
             setFile(null)
             setMessage(isUploaded ? FILE_UPLOAD_SUCESS : FILE_UPLOAD_FAILURE)
-
+            updateResult([{
+                ...res.data.uploadFile,
+                'uploadedDate': formatDate(res.data.uploadFile.uploadedDate)
+            }])
+     
         }).catch((err: any) => {
             setError(true)
             setMessage(FILE_UPLOAD_FAILURE)
@@ -79,7 +79,7 @@ export default function Upload({ acceptType }: FileUploadProps) {
         setFile(null)
         setFileNotSupported(false)
     }
-    
+
     return (
         <div className="container z-50 flex  justify-center items-center mt-6 ">
             <form onSubmit={uploadFile} >
@@ -91,7 +91,7 @@ export default function Upload({ acceptType }: FileUploadProps) {
                         className="h-14 absolute opacity-0" />
                     <input type="input"
                         defaultValue={file?.name}
-                        className="h-14 w-96 pl-8 shadow-md  text-gray-600  pr-20 truncate rounded-full z-0 focus:shadow focus:outline-none border border-2 border-blue-100" />
+                        className="h-14 w-96 pl-8 shadow-md  text-gray-600  pr-20 truncate rounded-full " />
                     <label htmlFor="file" className={`floating-label  ${file?.name ? " -top-0 text-xs" : " top-4 text-base "}`}>Browse File...</label>
 
                     <div className="absolute top-1 right-2 flex justify-center items-center">
@@ -104,7 +104,7 @@ export default function Upload({ acceptType }: FileUploadProps) {
                         }
                         <button
                             disabled={isDisabled()}
-                            className="h-12 w-20 font-medium text-white rounded-full bg-primary disabled:bg-primary-light disabled:opacity-70 disabled:cursor-not-allowed">
+                            className="h-12 w-20 font-medium text-white rounded-full bg-primary hover:bg-blue-500 disabled:bg-primary-light disabled:opacity-70 disabled:cursor-not-allowed">
                             {loading ? <Loader isLoading={loading} /> : "Upload"}
                         </button>
                     </div>

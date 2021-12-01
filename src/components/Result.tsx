@@ -6,17 +6,17 @@ import Loader from './Loader';
 import Icon from './svg/Icon';
 import { useSubscription } from '@apollo/client';
 
-// const Headers = ["Name", "Status", "Error File", "Log File", "Uploaded By", "Uploaded Date"]
+const TABLE_HEADERS = ["Name", "Status", "Error File", "Log File", "Uploaded By", "Uploaded Date"]
 const UPLOADED_FILE = "UPLOADED";
 const ERROR_FILE = "ERROR";
 const LOG_FILE = "LOG";
 
 export default function Result() {
     const [isLoading, setLoader] = useState<boolean>(false)
-    const { records, resetResult } = React.useContext(ResultContext)
     const [errorMsg, setErrorMsg] = useState<string>()
     const [isRefreshEnable, setRefreshEnable] = useState<boolean>(false)
     const { data } = useSubscription(FileService.NotificationSubscriberQuery, {});
+    const { records, resetResult } = React.useContext(ResultContext)
 
     useEffect(() => {
         loadResult();
@@ -65,21 +65,13 @@ export default function Result() {
                     }
                 </div>
                 <div className="shadow-md bg-white">
-                    <div className="grid  bg-white grid-cols-7 border sticky top-0 z-50 border-b-2 border-gray-100">
-                        <div className="table-header font-bold col-span-2">
-                            Name
-                        </div>
-                        <div className="table-header font-bold">
-                            Status
-                        </div>  <div className="table-header font-bold">
-                            Error File
-                        </div>  <div className="table-header font-bold">
-                            Log File
-                        </div>  <div className="table-header font-bold">
-                            Uploaded By
-                        </div>  <div className="table-header font-bold">
-                            Uploaded Date
-                        </div>
+                    <div className="grid  bg-white grid-cols-6 border sticky top-0 z-50 border-b-2 border-gray-100">
+
+                        {TABLE_HEADERS.map((header) => (
+                            <div key={header} className="table-header font-bold">
+                                {header}
+                            </div>
+                        ))}
                     </div>
                     <Loader isLoading={isLoading} color="border-primary" classes="py-2 flex h-12 justify-center  w-full" />
 
@@ -95,33 +87,29 @@ export default function Result() {
                         ))}
                     </div>
                 </div>
+                <div className="h-2 bg-gray-200"></div>
             </div>
 
         </div>
     )
 
-    function isResultEmpty() {
-        return !isLoading && records?.length === 0;
-    }
 
     function displayData(record: any, index: number) {
-        return <div key={`${index}-${record.recordId}`} className="grid grid-cols-7  even:bg-gray-100">
-            <div key={record.recordId} className="table-td col-span-2" title={record.name}>
-                <div className='truncate w-56 '>
-                    <a href="#/" onClick={() => downloadFile(UPLOADED_FILE, record.id, record.fileName)} className="link">
-                        {record.fileName}</a></div>
-            </div>
-            <div className="table-td ">
-                <span className={`badge ${record.logFileExist ? 'bg-red-100' : 'bg-green-100'}`}>
+        return <div key={`${index}-${record.recordId}`} className="grid grid-cols-6 even:bg-gray-100">
+            <div key={record.recordId} className="table-td flex-wrap" title={record.name}>
+                <a href="#/" onClick={() => downloadFile(UPLOADED_FILE, record.id, record.fileName)} className="link">
+                    {record.fileName}</a></div>
+            <div className="table-td  ">
+                <span className={getStatusColor(record)}>
                     {record.status}
                 </span>
             </div>
-            <div className={`table-td ${record.logFileExist && 'cursor-pointer'}`}>
-                {record.logFileExist ? <Icon.Download onClick={() => downloadFile(ERROR_FILE, record.id, record.fileName)} /> : "N/A"}
+            <div className={`table-td ${record.fileExist  && 'cursor-pointer'}`}>
+                {record.fileExist ? <Icon.Download onClick={() => downloadFile(ERROR_FILE, record.id, record.fileName)} /> : "N/A"}
             </div>
 
-            <div className={`table-td ${record.logFileExist && 'cursor-pointer'}`}>
-                {record.logFileExist ? <Icon.Download onClick={() => downloadFile(LOG_FILE, record.id, record.fileName)} /> : "N/A"}</div>
+            <div className={`table-td ${record.fileExist  && 'cursor-pointer'}`}>
+                {record.fileExist ? <Icon.Download onClick={() => downloadFile(LOG_FILE, record.id, record.fileName)} /> : "N/A"}</div>
             <div className="table-td ">
                 {record.uploadedBy}
             </div> <div className="table-td flex-wrap">
@@ -129,6 +117,16 @@ export default function Result() {
             </div>
         </div>
     }
+
+    function getStatusColor(record: any): string {
+        return `badge justify-center items-center  uppercase
+                ${record.status.includes("SUCCESS") && 'bg-green-100 text-green-500'}
+                ${record.status.includes("PROCESSING") && 'bg-yellow-100 text-yellow-500'}
+                ${record.status.includes("FAILED") && 'bg-red-100 text-red-500'}`;
+    }
+
+    function isResultEmpty() {
+        return !isLoading && records?.length === 0;
+    }
+
 }
-
-

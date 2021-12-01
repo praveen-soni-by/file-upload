@@ -2,6 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+  background-color: #f3f4f6;
+}
+.container-bg {
+  height: 500px;
+  background: linear-gradient(to bottom, #0099ff 55%, #f3f4f6 40%);
+}
+
 /* Css for modifying Scollbar -Start */
 .custome-scrollbar::-webkit-scrollbar {
   width: 8px;
@@ -124,21 +132,17 @@ li:hover > button svg {
 .dropdown-item {
   @apply rounded-t text-base   border-gray-50  hover:bg-gray-50 py-2 px-4 block;
 }
-.container-bg {
-  height: 500px;
-  background: linear-gradient(to bottom, #0099ff 60%, white 30%);
-}
 
 .table-header {
-  @apply px-6 py-3 text-left text-sm font-semibold  uppercase tracking-wider;
+  @apply px-6 py-3 text-left text-sm font-semibold uppercase;
 }
 
 .table-td {
-  @apply px-6 py-2 text-left whitespace-nowrap text-sm text-gray-600;
+  @apply px-6 py-2 text-left tracking-normal text-sm text-gray-600;
 }
 
 .badge {
-  @apply px-2 text-left inline-flex text-xs leading-5 rounded-full;
+  @apply px-2 text-left  text-xs leading-5 rounded-full font-medium;
 }
 .floating-label {
   @apply absolute text-gray-400  px-4 left-4 pointer-events-none transform origin-left transition-all duration-100 ease-in-out;

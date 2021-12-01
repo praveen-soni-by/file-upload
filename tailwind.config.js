@@ -15,7 +15,8 @@ module.exports = {
       colors: {
         'primary': '#0099ff',
         'secondary': '#243c5a',
-        'primary-light': '#243c5a'
+        'primary-light': '#243c5a',
+        
       },
       backgroundSize: {
         '50%': '50%',
